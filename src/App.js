@@ -1,10 +1,14 @@
-import SignUpLogin from "./components/SignUpLogin./SignUpLogin";
+import Nav from "./components/Nav";
+import { ContextProvider } from "./store/ContextApi";
+
 
 function App() {
   return (
-   <>
-    <SignUpLogin/>
-   </>
+    <>
+      <ContextProvider>
+          <Nav/>
+      </ContextProvider>
+    </>
   );
 }
 
