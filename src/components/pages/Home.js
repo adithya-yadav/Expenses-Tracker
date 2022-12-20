@@ -6,16 +6,41 @@ const Home = () => {
   const nameRef = useRef();
   const photoRef = useRef();
   const [showDetails, setShowDetails] = useState(false);
-  const showDetailsHandler = () => {
+  const key = "AIzaSyCfXxSu_jIqAKl4YlxyKA_9RABh0ofO_OA"
+  const showDetailsHandler = async() => {
+    try{
+        const response =await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${key}`,{
+            method:"POST",
+            body:JSON.stringify({
+                idToken:ctx.token
+            }),
+            headers:{
+                'Content-Type':'application/json'
+            }
+        })
+        const data = await response.json()
+        if(response.ok){
+            console.log(data.users)
+            nameRef.current.value = data.users[0].displayName
+            photoRef.current.value = data.users[0].photoUrl
+        }else{
+            throw new Error(data.error.message)
+        }
+    }catch(err){
+        alert(err.message)
+    }
     setShowDetails(true);
   };
+  const closeDetailsHandler = ()=>{
+    setShowDetails(false)
+  }
   const updateDetailsHandler = async () => {
     const name = nameRef.current.value;
     const photo = photoRef.current.value;
-    console.log(ctx)
+    
     try {
       const response = await fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyCfXxSu_jIqAKl4YlxyKA_9RABh0ofO_OA",
+        `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${key}`,
         {
           method: "POST",
           body: JSON.stringify({
@@ -55,7 +80,7 @@ const Home = () => {
         <div className={classes.details_center}>
           <div className="d-flex justify-content-between">
             <h3>Contact Details</h3>
-            <button className="btn btn-outline-danger">Cancel</button>
+            <button className="btn btn-outline-danger" onClick={closeDetailsHandler}>Cancel</button>
           </div>
           <div className="d-flex justify-content-around  mt-5 w-100">
             <div>
