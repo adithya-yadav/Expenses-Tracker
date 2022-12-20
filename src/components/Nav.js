@@ -7,13 +7,13 @@ import SignUpLogin from "./SignUpLogin./SignUpLogin";
 const Nav = () => {
   const ctx = useContext(contextApi);
   const { isLogin } = ctx;
+
   return (
     <Fragment>
       {isLogin && (
         <>
         <Route path="/Home">
           <Home />
-          <>hello</>
         </Route>
         <Route path="*">
         <Redirect to="/Home"/>
