@@ -2,6 +2,7 @@ import { Fragment, useContext } from "react";
 import { Redirect, Route } from "react-router-dom";
 import contextApi from "../store/ContextApi";
 import NavHeaders from "./NavHeaders";
+import DailyExpense from "./pages/DailyExpenses";
 import Home from "./pages/Home";
 import SignUpLogin from "./SignUpLogin./SignUpLogin";
 
@@ -16,6 +17,9 @@ const Nav = () => {
         <NavHeaders/>
         <Route path="/Home">
           <Home />
+        </Route>
+        <Route path="/DailyExpenses">
+          <DailyExpense/>
         </Route>
         <Route path="*">
         <Redirect to="/Home"/>

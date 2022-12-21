@@ -1,12 +1,10 @@
 .nav_headers{
-    padding: 1.5rem 0;
-    background-color: black;
-}
-.nav_headers .button{
+    padding: 1.3rem 0;
+    background-color: rgb(144, 208, 192);
     display: flex;
-    justify-content: end;
-    margin-right: .7rem;
+    justify-content: space-around;
 }
+
 .button button{
     padding: .5rem;
     border-radius: 20px;
