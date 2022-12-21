@@ -1,8 +1,10 @@
 import { Fragment, useContext, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import contextApi from "../../store/ContextApi";
 import classes from "./SignUpLogin.module.css";
 
 const SignUpLogin = () => {
+    const history = useHistory()
     const ctx = useContext(contextApi)
   const [isLoginPage, setIsLoginPage] = useState(true);
   const [verify,setVerify] = useState(false);
@@ -12,8 +14,12 @@ const SignUpLogin = () => {
   const confirmPasswordRef = useRef();
   const webApiKey = "AIzaSyCfXxSu_jIqAKl4YlxyKA_9RABh0ofO_OA";
   const changePageHandler = () => {
-    
+    if(verify){
+        setIsLoginPage(true)
+        setVerify(false)
+    }
     if (isLoginPage && !verify) {
+        history.push("/Home")
         setVerify(true)
       setIsLoginPage(false);
     } else {

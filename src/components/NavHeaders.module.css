@@ -1,0 +1,17 @@
+.nav_headers{
+    padding: 1.5rem 0;
+    background-color: black;
+}
+.nav_headers .button{
+    display: flex;
+    justify-content: end;
+    margin-right: .7rem;
+}
+.button button{
+    padding: .5rem;
+    border-radius: 20px;
+    color: red;
+    background-color: black;
+    font-weight: 700;
+    border: 0;
+}

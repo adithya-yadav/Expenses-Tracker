@@ -1,6 +1,7 @@
 import { Fragment, useContext } from "react";
 import { Redirect, Route } from "react-router-dom";
 import contextApi from "../store/ContextApi";
+import NavHeaders from "./NavHeaders";
 import Home from "./pages/Home";
 import SignUpLogin from "./SignUpLogin./SignUpLogin";
 
@@ -12,6 +13,7 @@ const Nav = () => {
     <Fragment>
       {isLogin && (
         <>
+        <NavHeaders/>
         <Route path="/Home">
           <Home />
         </Route>
