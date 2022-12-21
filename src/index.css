@@ -8,5 +8,5 @@
 
 body {
   font-family: 'Open Sans', 'Lato', sans-serif;
-  background: rgb(234, 235, 235);
+  background-color: rgb(234, 235, 235) !important;
 }
