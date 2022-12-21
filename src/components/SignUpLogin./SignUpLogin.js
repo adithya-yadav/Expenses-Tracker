@@ -58,7 +58,7 @@ const SignUpLogin = () => {
         if (isLoginPage) {
           console.log(data);
           history.push("/Home");
-          ctx.isLoginFunc(data.idToken);
+          ctx.isLoginFunc(data.idToken,data.email);
         } else {
         ctx.token = data.idToken
           setVerify(true);
