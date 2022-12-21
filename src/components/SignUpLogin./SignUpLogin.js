@@ -5,18 +5,25 @@ import classes from "./SignUpLogin.module.css";
 const SignUpLogin = () => {
     const ctx = useContext(contextApi)
   const [isLoginPage, setIsLoginPage] = useState(true);
+  const [verify,setVerify] = useState(false);
+
   const emailRef = useRef();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
   const webApiKey = "AIzaSyCfXxSu_jIqAKl4YlxyKA_9RABh0ofO_OA";
   const changePageHandler = () => {
-    if (isLoginPage) {
+    
+    if (isLoginPage && !verify) {
+        setVerify(true)
       setIsLoginPage(false);
     } else {
       setIsLoginPage(true);
     }
   };
   const onSubmitDetailsHandler = async (e) => {
+    if(verify){
+     setVerify(false)
+    }
     e.preventDefault();
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
@@ -24,6 +31,7 @@ const SignUpLogin = () => {
     if (isLoginPage) {
       url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${webApiKey}`;
     } else {
+        
       url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${webApiKey}`;
       const confirmPassword = confirmPasswordRef.current.value;
       if (password.length > 0 && password !== confirmPassword) {
@@ -49,7 +57,22 @@ const SignUpLogin = () => {
         if(isLoginPage){
             console.log(data)
             ctx.isLoginFunc(data.idToken)
-        }else alert(`successfully signedup ${data.email}`);
+        }else{
+            const response =await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${webApiKey}`,{
+                method:"POST",
+                body:JSON.stringify({
+                    requestType:"VERIFY_EMAIL",
+                    idToken:data.idToken
+                }),
+                headers:{
+                    "Content-Type":"application/json"
+                }
+            })
+            const curData =await response.json()
+            console.log(curData)
+            
+            alert(`successfully signedup ${data.email}`);
+        }
       } else {
         throw new Error(data.error.message);
       }
@@ -62,26 +85,26 @@ const SignUpLogin = () => {
   return (
     <Fragment>
       <div className={classes.center}>
-        <h1>{isLoginPage ? "Login" : "Signup"}</h1>
+        <h1>{verify ? "Verify Email" : isLoginPage ? "Login" : "Signup"}</h1>
         <form onSubmit={onSubmitDetailsHandler}>
-          <div className={classes.text_field} style={isLoginPage ? {background:"black",borderRadius:"20px"} :{}}>
-            <input type="text" ref={emailRef} required style={isLoginPage ? {color:"white"} :{}}/>
+          <div className={classes.text_field}>
+            <input type="text" ref={emailRef} required/>
             <span></span>
             <label>Email</label>
           </div>
-          <div className={classes.text_field} style={isLoginPage ? {background:"black",borderRadius:"20px"} :{}}>
-            <input type="password" ref={passwordRef} required style={isLoginPage ? {color:"white"} :{}}/>
+          {!verify && <div className={classes.text_field}>
+            <input type="password" ref={passwordRef} required/>
             <span></span>
             <label>Password</label>
-          </div>
-          {!isLoginPage && (
+          </div>}
+          {!verify && !isLoginPage && (
             <div className={classes.text_field}>
               <input type="password" ref={confirmPasswordRef} required />
               <span></span>
               <label>Confirm Password</label>
             </div>
           )}
-          <input type="submit" value={isLoginPage ? "Login" : "Signup"} />
+          <input type="submit" value={verify ? "Send Link" : isLoginPage ? "Login" : "Signup"} />
           {isLoginPage && <div className={classes.forgot_pass} onClick={forgotPasswordHandler}>Forgot Password?</div>}
         </form>
         <div className={classes.displayNone}></div>
