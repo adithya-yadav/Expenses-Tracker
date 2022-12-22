@@ -11,11 +11,11 @@ const NavHeaders = () => {
   return (
     <Fragment>
       <div className={classes.nav_headers}>
-        <Link to="/DailyExpenses" className="text-white text-decoration-none h4">DailyExpenses</Link>
-        <Link to="/Home" className="text-white text-decoration-none h4" >Home</Link>
-        <div className={classes.button}>
-          <button onClick={logoutHandler}>Logout</button>
-        </div>
+        <Link to="/DailyExpenses" className={classes.header}>DailyExpenses</Link>
+        <Link to="/Home"className={classes.header} >Home</Link>
+        {/* <div className={classes.header}> */}
+          <button onClick={logoutHandler} className={classes.header}>Logout</button>
+        {/* </div> */}
       </div>
     </Fragment>
   );

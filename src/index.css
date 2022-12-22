@@ -10,3 +10,26 @@ body {
   font-family: 'Open Sans', 'Lato', sans-serif;
   background-color: rgb(234, 235, 235) !important;
 }
+
+@media(max-width:998px){
+  html{
+    font-size: 75%;
+  }
+  
+}
+@media(max-width:768px){
+  html{
+    font-size: 65%;
+  }
+
+}
+@media(max-width:500px){
+  html{
+    font-size: 45%;
+  }
+}
+@media(max-width:300px){
+  html{
+    font-size: 25%;
+  }
+}

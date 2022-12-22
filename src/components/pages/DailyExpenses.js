@@ -1,40 +1,45 @@
-import { useContext, useRef, useState } from "react";
+import { Fragment, useContext, useRef, useState } from "react";
 import contextApi from "../../store/ContextApi";
 import classes from "./DailyExpense.module.css";
 import ExpensesList from "./ExpensesList";
 
-const DailyExpense = () => {
+const DailyExpense = (props) => {
   const [expenseBox, setExpenseBox] = useState(false);
-  const amountRef = useRef()
-  const descriptionRef = useRef()
-  const categoryRef = useRef()
-  const ctx = useContext(contextApi)
+  const amountRef = useRef();
+  const descriptionRef = useRef();
+  const categoryRef = useRef();
+  const ctx = useContext(contextApi);
   const showExpenseHandler = () => {
     setExpenseBox(true);
   };
-  const addExpenseHandler = (e)=>{
-    e.preventDefault()
-    const amount = parseInt(amountRef.current.value)
-    const description = descriptionRef.current.value
-    const category = categoryRef.current.value
+  const addExpenseHandler = (e) => {
+    e.preventDefault();
+    const amount = parseInt(amountRef.current.value);
+    const description = descriptionRef.current.value;
+    const category = categoryRef.current.value;
     const expense = {
-        amount,
-        description,
-        category
-    }
-    ctx.addExpenseFunc(expense)
-    
-  }
+      amount,
+      description,
+      category,
+    };
+    ctx.addExpenseFunc(expense);
+    amountRef.current.value=""
+    descriptionRef.current.value=""
+    categoryRef.current.value=""
+    setExpenseBox(false)
+  };
+
   return (
-    <>
-    <ExpensesList/>
+    <Fragment>
+      <ExpensesList/>
       {!expenseBox && (
-        <button
-          className={`${classes.add_exp_btn} btn btn-success rounded-circle`}
-          onClick={showExpenseHandler}
-        >
-          <h1>+</h1>
-        </button>
+        <footer className={classes.add_exp_btn}>
+          <button
+            onClick={showExpenseHandler}
+          >
+            Add Expense
+          </button>
+        </footer>
       )}
       {expenseBox && (
         <form onSubmit={addExpenseHandler} className={classes.center}>
@@ -56,7 +61,11 @@ const DailyExpense = () => {
               <label htmlFor="category" className="me-3 h4">
                 category :
               </label>
-              <select ref={categoryRef} id="category" className="p-2 pe-4 rounded-pill">
+              <select
+                ref={categoryRef}
+                id="category"
+                className="p-2 pe-4 rounded-pill"
+              >
                 <option value="Food">Food</option>
                 <option value="Petrol">Petrol</option>
                 <option value="Salary">Salary</option>
@@ -85,7 +94,7 @@ const DailyExpense = () => {
           </div>
         </form>
       )}
-    </>
+    </Fragment>
   );
 };
 
