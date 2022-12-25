@@ -1,18 +1,20 @@
-import { Fragment, useContext, useRef, useState } from "react";
-import contextApi from "../../store/ContextApi";
+import { Fragment, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import classes from "./Home.module.css";
 const Home = () => {
-  const ctx = useContext(contextApi);
   const nameRef = useRef();
   const photoRef = useRef();
   const [showDetails, setShowDetails] = useState(false);
   const key = "AIzaSyCfXxSu_jIqAKl4YlxyKA_9RABh0ofO_OA"
+
+  const selectToken = useSelector(state=>state.auth.token)
+
   const showDetailsHandler = async() => {
     try{
         const response =await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${key}`,{
             method:"POST",
             body:JSON.stringify({
-                idToken:ctx.token
+                idToken:selectToken
             }),
             headers:{
                 'Content-Type':'application/json'
@@ -44,7 +46,7 @@ const Home = () => {
         {
           method: "POST",
           body: JSON.stringify({
-            idToken: ctx.token,
+            idToken: selectToken,
             displayName: name,
             photoUrl: photo,
             returnSecureToken: true,

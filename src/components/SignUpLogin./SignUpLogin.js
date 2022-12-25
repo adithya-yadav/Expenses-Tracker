@@ -1,11 +1,12 @@
-import { Fragment, useContext, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
-import contextApi from "../../store/ContextApi";
+import { Fragment, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../../store/Auth";
 import classes from "./SignUpLogin.module.css";
 
 const SignUpLogin = () => {
-  const history = useHistory();
-  const ctx = useContext(contextApi);
+  const authCurrentToken = useSelector(state=>state.auth.token)
+  const dispatch = useDispatch()
+
   const [isLoginPage, setIsLoginPage] = useState(true);
   const [verify, setVerify] = useState(false);
   const [forgotPass,setForgotPass] = useState(false)
@@ -19,11 +20,7 @@ const SignUpLogin = () => {
         setForgotPass(false)
         setIsLoginPage(true)
     }
-    if (isLoginPage) {
-      setIsLoginPage(false);
-    } else {
-      setIsLoginPage(true);
-    }
+    setIsLoginPage(!isLoginPage)
   };
   const onSubmitDetailsHandler = async (e) => {
     e.preventDefault();
@@ -56,11 +53,10 @@ const SignUpLogin = () => {
       const data = await response.json();
       if (response.ok) {
         if (isLoginPage) {
-          console.log(data);
-          history.push("/Home");
-          ctx.isLoginFunc(data.idToken,data.email);
+          localStorage.setItem("token",data.idToken)
+          localStorage.setItem("email",data.email.replace("@", "").replace(".", "").replace(".", ""))
+          dispatch(authActions.login({token:data.idToken,email:data.email}))
         } else {
-        ctx.token = data.idToken
           setVerify(true);
           alert(`successfully signedup ${data.email}`);
         }
@@ -82,7 +78,7 @@ const SignUpLogin = () => {
     }else{
         body=JSON.stringify({
             requestType: "VERIFY_EMAIL",
-            idToken: ctx.token,
+            idToken: authCurrentToken,
           })
     }
     try {
@@ -98,25 +94,22 @@ const SignUpLogin = () => {
       );
       const data = await response.json();
       if (response.ok) {
-        console.log(data);
         alert("successfully sended link to your email")
         setIsLoginPage(true)
         if(forgotPass){
             setForgotPass(false)
         }else setVerify(false)
       } else {
-        console.log(data)
         throw new Error(data.error.message);
       }
     } catch (error) {
-        console.log(error)
       alert(error.message);
     }
   };
   const forgotPasswordHandler = () => {
     setForgotPass(true)
     setIsLoginPage(false)
-  };
+  };  
 
   return (
     <Fragment>

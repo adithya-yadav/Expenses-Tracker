@@ -1,21 +1,22 @@
-import { Fragment, useContext } from "react";
+import { Fragment } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import contextApi from "../store/ContextApi";
+import { authActions } from "../store/Auth";
 import classes from "./NavHeaders.module.css";
 
 const NavHeaders = () => {
-  const ctx = useContext(contextApi);
+  const dispatch = useDispatch()
   const logoutHandler = () => {
-    ctx.isLogoutFunc();
+    localStorage.removeItem("token")
+    localStorage.removeItem("email")
+    dispatch(authActions.logout())
   };
   return (
     <Fragment>
       <div className={classes.nav_headers}>
         <Link to="/DailyExpenses" className={classes.header}>DailyExpenses</Link>
         <Link to="/Home"className={classes.header} >Home</Link>
-        {/* <div className={classes.header}> */}
           <button onClick={logoutHandler} className={classes.header}>Logout</button>
-        {/* </div> */}
       </div>
     </Fragment>
   );

@@ -1,14 +1,13 @@
-import { Fragment, useContext } from "react";
+import { Fragment } from "react";
+import { useSelector } from "react-redux";
 import { Redirect, Route } from "react-router-dom";
-import contextApi from "../store/ContextApi";
 import NavHeaders from "./NavHeaders";
 import DailyExpense from "./pages/DailyExpenses";
 import Home from "./pages/Home";
 import SignUpLogin from "./SignUpLogin./SignUpLogin";
 
 const Nav = () => {
-  const ctx = useContext(contextApi);
-  const { isLogin } = ctx;
+  const isLogin = useSelector(state=>state.auth.isAuthentication)
 
   return (
     <Fragment>
@@ -22,7 +21,7 @@ const Nav = () => {
           <DailyExpense/>
         </Route>
         <Route path="*">
-        <Redirect to="/Home"/>
+        <Redirect to="/DailyExpenses"/>
       </Route>
         </>
       )}
