@@ -10,15 +10,9 @@
 }
 .details_center{
     position: absolute;
-    right: 0;
-    top:5rem;
+    right:5%;
+    top:15%;
     width: 70%;
-}
-.update{
-    border-radius: .5rem;
-    padding: .3rem;
-    margin: 2rem 0;
-    color: white;
-    background-color: rgb(169, 97, 4);
-    
+    background-color: white;
+    padding: 2% 5%;
 }

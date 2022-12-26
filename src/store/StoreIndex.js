@@ -5,7 +5,7 @@ import expensesReducer from './ExpenseStore'
 const store = configureStore({
     reducer:{
         auth:AuthReducer,
-        expenses:expensesReducer
+        expenses:expensesReducer,
     }
 })
 // store.subscribe(()=>console.log(store.getState().expenses))

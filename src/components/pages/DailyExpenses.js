@@ -1,41 +1,34 @@
-import { Fragment, useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { Fragment, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { expenseActions } from "../../store/ExpenseStore";
+import { storeExpenseInFirebase } from "../api/api";
 import classes from "./DailyExpense.module.css";
 import ExpensesList from "./ExpensesList";
 
 const DailyExpense = (props) => {
   const dispatch = useDispatch();
+  const selectAmount = useSelector((state) => state.expenses.totalAmount);
+  const selectExpenses = useSelector((state) => state.expenses.expenses);
+  const selectthemeToggle = useSelector((state) => state.expenses.themeToggle);
+  const selecttheme = useSelector((state) => state.expenses.theme);
   const [expenseBox, setExpenseBox] = useState(false);
+  const [activePremium, setActivePremium] = useState(false);
   const amountRef = useRef();
   const descriptionRef = useRef();
   const categoryRef = useRef();
-  const url = "https://myweblink-6a02d-default-rtdb.firebaseio.com/";
-  const localEmail = localStorage.getItem("email");
+
+  if (selectAmount > 10000) {
+    if (!selectthemeToggle && !activePremium) setActivePremium(true);
+  }
 
   const showExpenseHandler = () => {
     setExpenseBox(true);
   };
 
-  useEffect(() => {
-    async function getdata() {
-      try {
-        const res = await fetch(`${url}${localEmail}.json`);
-        const data = await res.json();
-        if (res.ok) {
-          for (const key in data) {
-            data[key]["id"] = key;
-            dispatch(expenseActions.AddExpense(data[key]));
-          }
-        } else {
-          throw new Error(data.error.message);
-        }
-      } catch (err) {
-        alert(err.message);
-      }
-    }
-    getdata()
-  }, [localEmail,dispatch]);
+  const activeHandler = () => {
+    dispatch(expenseActions.themeToggle());
+    setActivePremium(false);
+  };
 
   const addExpenseHandler = async (e) => {
     e.preventDefault();
@@ -47,24 +40,8 @@ const DailyExpense = (props) => {
       description,
       category,
     };
-    try {
-      const response = await fetch(`${url}${localEmail}.json`, {
-        method: "POST",
-        body: JSON.stringify(expense),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      if (response.ok) {
-        expense["id"] = data.name;
-        dispatch(expenseActions.AddExpense(expense));
-      } else {
-        throw new Error(data.error.message);
-      }
-    } catch (error) {
-      return alert(error.message);
-    }
+
+    storeExpenseInFirebase(expense, dispatch);
 
     amountRef.current.value = "";
     descriptionRef.current.value = "";
@@ -72,12 +49,70 @@ const DailyExpense = (props) => {
     setExpenseBox(false);
   };
 
+  const changeThemeHandler = () => {
+    dispatch(expenseActions.theme());
+  };
+
+  function makeCsv(rows) {
+    var stringedArray = rows.map((row) => {
+      var rowString = "";
+      Object.keys(row).map(key => {
+        if (key !== "id") rowString = `${rowString}${row[key]},`;
+      });
+      return rowString;
+    });
+    var CSV = ["Amount,Description,Expense",...stringedArray,`TotalAmount:${selectAmount}`].join("\n");
+    return CSV;
+  }
+
+  const downloadExpense = document.getElementById("download");
+  if (downloadExpense) {
+    const blob = new Blob([makeCsv(selectExpenses)]);
+    downloadExpense.href = URL.createObjectURL(blob);
+  }
+
   return (
     <Fragment>
+      <a
+        download="file.csv"
+        className={
+          selecttheme ? `${classes.download} bg-success` : `${classes.download}`
+        }
+        id="download"
+      >
+        Download ExpensesList
+      </a>
+      {selectthemeToggle && (
+        <div className="text-center mt-3">
+          <button
+            className={
+              selecttheme
+                ? "btn btn-outline-success rounded-5 pt-3 pb-3 pe-5 ps-5"
+                : "btn btn-success rounded-5 pt-3 pb-3 pe-5 ps-5"
+            }
+            onClick={changeThemeHandler}
+          >
+            switch from light theme to {selecttheme ? "Dark" : "light"} theme
+          </button>
+        </div>
+      )}
       <ExpensesList />
+      {activePremium && (
+        <div className={classes.active_premium}>
+          <h2 className="text-center text-success">Activate Premium</h2>
+          <div className="text-center">
+            <button onClick={activeHandler}>Activate</button>
+          </div>
+        </div>
+      )}
       {!expenseBox && (
         <footer className={classes.add_exp_btn}>
-          <button onClick={showExpenseHandler}>Add Expense</button>
+          <button
+            className={selecttheme ? "bg-success" : ""}
+            onClick={showExpenseHandler}
+          >
+            Add Expense
+          </button>
         </footer>
       )}
       {expenseBox && (
@@ -121,13 +156,13 @@ const DailyExpense = (props) => {
                 ref={descriptionRef}
                 placeholder="Desccription"
                 id="description"
-                className="p-3 pe-5 rounded-pill"
+                className="p-2 pe-4 rounded-pill"
                 required
               />
             </div>
             <div className="me-5">
-              <button type="submit" className="btn btn-success rounded-circle">
-                <h1>✓</h1>
+              <button type="submit" className="btn btn-success rounded">
+                <h3>Add Expense</h3>
               </button>
             </div>
           </div>

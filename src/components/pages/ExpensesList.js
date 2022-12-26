@@ -1,14 +1,11 @@
 import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { expenseActions } from "../../store/ExpenseStore";
+import { editorDeleteInFirebase } from "../api/api";
 import classes from "./ExpensesList.module.css";
 
 const ExpensesList = (props) => {
-  const url = "https://myweblink-6a02d-default-rtdb.firebaseio.com/";
-  const localEmail = localStorage.getItem("email");
-
-  // const ctx = useContext(contextApi);
   const expensesState = useSelector((state) => state.expenses);
+  const themeSelect = useSelector(state=>state.expenses.theme)
   const dispatch = useDispatch();
   const [tempInput, setTempInput] = useState(null);
   const categoryRef = useRef();
@@ -19,7 +16,7 @@ const ExpensesList = (props) => {
     <>
       <div className={classes.list}>
         <table className="w-100">
-          <thead>
+          <thead className={themeSelect ? "bg-success" : ""}>
             <tr>
               <td>Expense</td>
               <td>Description</td>
@@ -28,7 +25,7 @@ const ExpensesList = (props) => {
               <td>Delete Expense</td>
             </tr>
           </thead>
-          <tbody className={classes.total_amount}>
+          <tbody>
             <tr>
               <td className="w-100">
                 Total Amount : $ {expensesState.totalAmount}
@@ -38,68 +35,28 @@ const ExpensesList = (props) => {
           <tfoot>
             {expensesState.expenses.map((exp) => {
               const deleteOrEditHandler = async (e) => {
-                let obj;
                 const name = e.target.name;
                 if (name === "edit" && tempInput === exp.id) {
                   const category = categoryRef.current.value;
                   const description = descriptionRef.current.value;
                   const amount = parseInt(amountRef.current.value);
-                  if (category && description && amount) {
                     const edited = { category, description, amount };
-                    obj = {
-                      method: "PUT",
-                      body: JSON.stringify(edited),
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                    };
-                    dispatch(
-                      expenseActions.deleteorEditExpense({
-                        id: exp.id,
-                        name: name,
-                        edited: edited,
-                      })
-                    );
+                  if (category && description && amount) {
+                    editorDeleteInFirebase(name,exp.id,dispatch,edited)
+                    setTempInput(null)
+                    return
                   }else{
                     alert("enter vaild input")
                   }
                 }
                 if (name === "edit") {
                   setTempInput(exp.id);
-                } else {
-                  obj = {
-                    method: "DELETE",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                  };
-                  dispatch(
-                    expenseActions.deleteorEditExpense({
-                      id: exp.id,
-                      name: name,
-                    })
-                  );
-                }
-                if (obj) {
-                  try {
-                    const res = await fetch(
-                      `${url}${localEmail}/${exp.id}.json`,
-                      obj
-                    );
-                    const data = await res.json();
-                    if (!res.ok) {
-                      throw new Error(data.error.message);
-                    }else{
-                      setTempInput(null);
-                    }
-                  } catch (err) {
-                    alert(err.message);
-                    return;
-                  }
+                }else{
+                  editorDeleteInFirebase(name,exp.id,dispatch)
                 }
               };
               return (
-                <tr key={exp.id}>
+                <tr key={exp.id} className={themeSelect ? classes.theme_row_expense : ""}>
                   <td>
                     {tempInput === exp.id ? (
                       <input

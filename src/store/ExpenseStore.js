@@ -5,7 +5,10 @@ const expensesSlice = createSlice({
   name: "expenses",
   initialState: {
     expenses:[],
-    totalAmount:0
+    totalAmount:0,
+    themeToggle:false,
+    theme:false,
+    showActivePremium:true
 },
   reducers: {
     AddExpense(state, action) {
@@ -29,9 +32,19 @@ const expensesSlice = createSlice({
                 category:action.payload.edited.category
             }
         }else{
-            state.totalAmount-=state.expenses[expInd]
+            state.totalAmount-=state.expenses[expInd].amount
             state.expenses.splice(expInd,1)
         }
+    },
+    themeToggle(state){
+        state.themeToggle = true
+    },
+    theme(state){
+        state.theme = !state.theme
+    },
+    onLogoutDeleteExpences(state){
+        state.expenses = []
+        state.totalAmount = 0
     }
   },
 });

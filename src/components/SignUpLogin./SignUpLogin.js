@@ -1,10 +1,12 @@
 import { Fragment, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../../store/Auth";
+import { getExpensesFromFirebase, loginorSigninToFirebase, sendLinkToMailFromFirebase } from "../api/api";
 import classes from "./SignUpLogin.module.css";
 
 const SignUpLogin = () => {
   const authCurrentToken = useSelector(state=>state.auth.token)
+
   const dispatch = useDispatch()
 
   const [isLoginPage, setIsLoginPage] = useState(true);
@@ -13,98 +15,47 @@ const SignUpLogin = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
-  const webApiKey = "AIzaSyCfXxSu_jIqAKl4YlxyKA_9RABh0ofO_OA";
 
   const changePageHandler = () => {
     if(forgotPass){
         setForgotPass(false)
         setIsLoginPage(true)
     }
+    if(isLoginPage){
+      setForgotPass(false)
+      setVerify(false)
+    }
+    if(verify){
+      setForgotPass(false)
+      setIsLoginPage(false)
+    }
     setIsLoginPage(!isLoginPage)
   };
-  const onSubmitDetailsHandler = async (e) => {
+  const onSubmitDetailsHandler = (e) => {
     e.preventDefault();
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
-    let url;
-    if (isLoginPage) {
-      url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${webApiKey}`;
-    } else {
-      url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${webApiKey}`;
+    if(!isLoginPage){
       const confirmPassword = confirmPasswordRef.current.value;
-      if (password.length > 0 && password !== confirmPassword) {
-        alert("password did not match");
-        return;
-      }
-    }
-
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify({
-          email: email,
-          password: password,
-          returnSecureToken: true,
-        }),
-        headers: {
-          "content-type": "application/json",
-        },
-      });
-      const data = await response.json();
-      if (response.ok) {
-        if (isLoginPage) {
-          localStorage.setItem("token",data.idToken)
-          localStorage.setItem("email",data.email.replace("@", "").replace(".", "").replace(".", ""))
-          dispatch(authActions.login({token:data.idToken,email:data.email}))
-        } else {
-          setVerify(true);
-          alert(`successfully signedup ${data.email}`);
-        }
-      } else {
-        throw new Error(data.error.message);
-      }
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-  const verifyHandler = async () => {
-    const email = emailRef.current.value;
-    let body;
-    if(forgotPass){
-        body=JSON.stringify({
-            email:email,
-            requestType:"PASSWORD_RESET",
-          })
+    if (password.length > 0 && password !== confirmPassword) {
+      alert("password did not match");
+      return;
     }else{
-        body=JSON.stringify({
-            requestType: "VERIFY_EMAIL",
-            idToken: authCurrentToken,
-          })
-    }
-    try {
-      const response = await fetch(
-        `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${webApiKey}`,
-        {
-          method: "POST",
-          body: body,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = await response.json();
-      if (response.ok) {
-        alert("successfully sended link to your email")
-        setIsLoginPage(true)
-        if(forgotPass){
-            setForgotPass(false)
-        }else setVerify(false)
-      } else {
-        throw new Error(data.error.message);
+      loginorSigninToFirebase(email,password,isLoginPage,dispatch)
+      if(!isLoginPage){
+        setVerify(true);
       }
-    } catch (error) {
-      alert(error.message);
     }
+  }else{
+    loginorSigninToFirebase(email,password,isLoginPage,dispatch)
+  }
+  };
+  const sendLinkToMailHandler = () => {
+    const email = emailRef.current.value;
+    sendLinkToMailFromFirebase(email,forgotPass,verify,authCurrentToken)
+    setIsLoginPage(true)
+    setVerify(false)
+    setForgotPass(false)
   };
   const forgotPasswordHandler = () => {
     setForgotPass(true)
@@ -148,7 +99,7 @@ const SignUpLogin = () => {
             <input
               type="button"
               className={classes.submit}
-              onClick={verifyHandler}
+              onClick={sendLinkToMailHandler}
               value="Send Link"
             />
           )}
@@ -156,7 +107,7 @@ const SignUpLogin = () => {
             <input
               type="button"
               className={classes.submit}
-              onClick={verifyHandler}
+              onClick={sendLinkToMailHandler}
               value="Send Link"
             />
           )}
