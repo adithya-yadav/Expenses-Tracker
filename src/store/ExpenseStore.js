@@ -8,7 +8,7 @@ const expensesSlice = createSlice({
     totalAmount:0,
     themeToggle:false,
     theme:false,
-    showActivePremium:true
+    showActivePremium:false
 },
   reducers: {
     AddExpense(state, action) {
@@ -35,16 +35,30 @@ const expensesSlice = createSlice({
             state.totalAmount-=state.expenses[expInd].amount
             state.expenses.splice(expInd,1)
         }
+        if(state.totalAmount < 10000){
+          state.theme = false
+          state.themeToggle = false
+        }
     },
     themeToggle(state){
         state.themeToggle = true
+        state.showActivePremium=false
     },
     theme(state){
         state.theme = !state.theme
     },
+    showActivePremium(state,action){
+      if(action.payload === 'true'){
+        state.showActivePremium = true
+      }else{
+        state.showActivePremium = false
+      }
+    },
     onLogoutDeleteExpences(state){
         state.expenses = []
         state.totalAmount = 0
+        state.themeToggle=false;
+        state.theme=false
     }
   },
 });

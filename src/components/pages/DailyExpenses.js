@@ -1,7 +1,7 @@
 import { Fragment, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { expenseActions } from "../../store/ExpenseStore";
-import { storeExpenseInFirebase } from "../api/api";
+import { makeCsv, storeExpenseInFirebase } from "../api/api";
 import classes from "./DailyExpense.module.css";
 import ExpensesList from "./ExpensesList";
 
@@ -11,14 +11,20 @@ const DailyExpense = (props) => {
   const selectExpenses = useSelector((state) => state.expenses.expenses);
   const selectthemeToggle = useSelector((state) => state.expenses.themeToggle);
   const selecttheme = useSelector((state) => state.expenses.theme);
+  const selectActivePremium = useSelector(state=>state.expenses.showActivePremium)
   const [expenseBox, setExpenseBox] = useState(false);
-  const [activePremium, setActivePremium] = useState(false);
   const amountRef = useRef();
   const descriptionRef = useRef();
   const categoryRef = useRef();
 
   if (selectAmount > 10000) {
-    if (!selectthemeToggle && !activePremium) setActivePremium(true);
+    if (!selectthemeToggle ){ 
+      dispatch(expenseActions.showActivePremium('true'))
+    }
+  }else if(selectAmount < 10000) {
+    if (selectthemeToggle ){ 
+      dispatch(expenseActions.theme())
+    }
   }
 
   const showExpenseHandler = () => {
@@ -27,7 +33,7 @@ const DailyExpense = (props) => {
 
   const activeHandler = () => {
     dispatch(expenseActions.themeToggle());
-    setActivePremium(false);
+    dispatch(expenseActions.showActivePremium('false'))
   };
 
   const addExpenseHandler = async (e) => {
@@ -53,21 +59,9 @@ const DailyExpense = (props) => {
     dispatch(expenseActions.theme());
   };
 
-  function makeCsv(rows) {
-    var stringedArray = rows.map((row) => {
-      var rowString = "";
-      Object.keys(row).map(key => {
-        if (key !== "id") rowString = `${rowString}${row[key]},`;
-      });
-      return rowString;
-    });
-    var CSV = ["Amount,Description,Expense",...stringedArray,`TotalAmount:${selectAmount}`].join("\n");
-    return CSV;
-  }
-
   const downloadExpense = document.getElementById("download");
   if (downloadExpense) {
-    const blob = new Blob([makeCsv(selectExpenses)]);
+    const blob = new Blob([makeCsv(selectExpenses,selectAmount)]);
     downloadExpense.href = URL.createObjectURL(blob);
   }
 
@@ -87,17 +81,17 @@ const DailyExpense = (props) => {
           <button
             className={
               selecttheme
-                ? "btn btn-outline-success rounded-5 pt-3 pb-3 pe-5 ps-5"
-                : "btn btn-success rounded-5 pt-3 pb-3 pe-5 ps-5"
+                ? "btn btn-success rounded-5 pt-3 pb-3 pe-5 ps-5"
+                : "btn btn-outline-success rounded-5 pt-3 pb-3 pe-5 ps-5"
             }
             onClick={changeThemeHandler}
           >
-            switch from light theme to {selecttheme ? "Dark" : "light"} theme
+            switch from {selecttheme ? "Dark" : "Light"} theme to {selecttheme ? "Light" : "Dark"} theme
           </button>
         </div>
       )}
       <ExpensesList />
-      {activePremium && (
+      {selectActivePremium && (
         <div className={classes.active_premium}>
           <h2 className="text-center text-success">Activate Premium</h2>
           <div className="text-center">
@@ -161,7 +155,7 @@ const DailyExpense = (props) => {
               />
             </div>
             <div className="me-5">
-              <button type="submit" className="btn btn-success rounded">
+              <button type="submit" className="btn btn-success rounded-5">
                 <h3>Add Expense</h3>
               </button>
             </div>

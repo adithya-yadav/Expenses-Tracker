@@ -8,6 +8,7 @@ const initialAuthState = {
   isAuthentication: isAuthIntialState,
   token: localToken,
   email: localEmail,
+  error: null
 };
 
 const authSlice = createSlice({
@@ -23,7 +24,11 @@ const authSlice = createSlice({
     },
     logout(state) {
       state.isAuthentication = false;
+      state.error = null
     },
+    setError(state,action){
+      state.error = action.payload
+    }
   },
 });
 

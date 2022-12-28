@@ -1,14 +1,12 @@
 import { Fragment, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { authActions } from "../../store/Auth";
-import { getExpensesFromFirebase, loginorSigninToFirebase, sendLinkToMailFromFirebase } from "../api/api";
+import { loginorSigninToFirebase, sendLinkToMailFromFirebase } from "../api/api";
 import classes from "./SignUpLogin.module.css";
 
 const SignUpLogin = () => {
   const authCurrentToken = useSelector(state=>state.auth.token)
-
+  const selectError = useSelector(state=>state.auth.error)
   const dispatch = useDispatch()
-
   const [isLoginPage, setIsLoginPage] = useState(true);
   const [verify, setVerify] = useState(false);
   const [forgotPass,setForgotPass] = useState(false)
@@ -66,6 +64,7 @@ const SignUpLogin = () => {
     <Fragment>
       <div className={classes.center}>
         <h1>{forgotPass ? "Password Reset" : verify ? "Verify Email" : isLoginPage ? "Login" : "Signup"}</h1>
+        {selectError && <h4>{selectError}</h4>}
         <form onSubmit={onSubmitDetailsHandler}>
           <div className={classes.text_field}>
             <input type="text" ref={emailRef} required />

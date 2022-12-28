@@ -49,7 +49,7 @@ export async function loginorSigninToFirebase(
       throw new Error(data.error.message);
     }
   } catch (error) {
-    alert(error.message);
+    dispatch(authActions.setError(error.message))
   }
 }
 
@@ -65,7 +65,7 @@ export async function sendLinkToMailFromFirebase(
       email: email,
       requestType: "PASSWORD_RESET",
     });
-  } else {
+  } else if(verify){
     body = JSON.stringify({
       idToken: authCurrentToken,
       requestType: "VERIFY_EMAIL",
@@ -225,4 +225,16 @@ export async function editorDeleteInFirebase(name, id, dispatch, edited) {
     alert(err.message);
     return;
   }
+}
+
+export function makeCsv(rows,selectAmount) {
+  var stringedArray = rows.map((row) => {
+    var rowString = "";
+    Object.keys(row).map(key => {
+      if (key !== "id") rowString = `${rowString}${row[key]},`;
+    });
+    return rowString;
+  });
+  var CSV = ["Amount,Description,Expense",...stringedArray,`TotalAmount:${selectAmount}`].join("\n");
+  return CSV;
 }
