@@ -1,0 +1,28 @@
+form{
+    margin: 1rem;
+}
+form input[type="text"]{
+    padding: 2%;
+    width: 75%;
+    border:0ch;
+    background-color: transparent;
+    border-bottom: 2px solid purple;
+    color:purple;
+    font-size:x-large;
+}
+form input[type="text"]:focus{
+    outline:none;
+    border-bottom: 3px solid purple;
+}
+form input[type="submit"]{
+    padding: 3%;
+    width: 20%;
+    background-color: rgb(158, 75, 158);
+    color: white;
+    font-weight:bold;
+    margin-left: 1%;
+    border: 0ch;
+}
+form input[type="submit"]:hover{
+    background-color: purple;
+}

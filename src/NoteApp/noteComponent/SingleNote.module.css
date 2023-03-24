@@ -1,0 +1,28 @@
+.note_center{
+    background-color: white;
+    padding: 2% 4%;
+    margin-bottom: 1px;
+    margin-right: 1px;
+    cursor: pointer;
+}
+
+.note_headers{
+    display: flex;
+    justify-content: space-between;
+}
+.note_headers h5{
+    color: purple;
+    width: 70%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.note_headers small{
+    color: gray;
+}
+.note_center p{
+    color: gray;
+    overflow: hidden;
+    white-space:nowrap;
+    text-overflow: ellipsis;
+}

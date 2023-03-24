@@ -74,7 +74,7 @@ const DailyExpense = (props) => {
         }
         id="download"
       >
-        Download ExpensesList
+        Download ExpensesList ⬇
       </a>
       {selectthemeToggle && (
         <div className="text-center mt-3">

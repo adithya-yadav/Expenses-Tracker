@@ -1,0 +1,46 @@
+.todo_center{
+    display: flex;
+    margin:1rem;
+    width: 90%;
+    height: 5rem;
+    background-color: rgb(158, 75, 158);
+    color: white;
+    padding: 2%;
+    align-items: center;
+}
+.todo_center:hover{
+    width: 92%;
+    height: 6rem;
+    background-color: purple;
+}
+.todo_center input{
+    width: 60%;
+    font-weight: 500;
+    font-size: large;
+    padding: .5rem;
+    background-color: rgb(252, 241, 252);
+    color: purple;
+}
+.todo_center .todo{
+    width: 60%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-weight: 500;
+    font-size: large;
+}
+.todo_center .end{
+    display: flex;
+    width: 20%;
+    align-items: center;
+}
+
+.todo_center .end button{
+    padding: 5% 10%;
+    margin-left: 5%;
+    background-color: white;
+    color: purple;
+    font-size: large;
+    font-weight: 500;
+    border: 0ch;
+}

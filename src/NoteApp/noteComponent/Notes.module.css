@@ -1,0 +1,30 @@
+.center{
+    width: 30%;
+    height: 100%;
+    overflow:scroll;
+    display: flex;
+    flex-direction: column;
+}
+
+.note_header{
+    text-align: center;
+    color: white;
+    font-weight: 500;
+    font-size:x-large;
+    background-color: purple;
+    padding: .5rem;
+}
+.note_search{
+    background-color: white;
+    padding: .5rem;
+    color: purple;
+    font-size: large;
+    font-weight: 500;
+}
+.sorter{
+    padding: .5rem;
+    background-color: white;
+    color: purple;
+    font-weight: 500;
+    font-size:large;
+}

@@ -1,0 +1,16 @@
+.center{
+    background-color:purple;
+    width: 98vw;
+    height: 88vh;
+    display:flex;
+}
+.header{
+    background-color:white;
+    color:purple;
+    text-align: center;
+    padding: 2% 0;
+    font-family:'Times New Roman', Times, serif;
+    border-bottom: 5px solid purple;
+    font-weight: 500;
+    font-size:xx-large;
+}

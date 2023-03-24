@@ -1,0 +1,30 @@
+input[type="search"]{
+    margin: 0rem 1rem;
+    padding: 2%;
+    width: 90%;
+    background-color: transparent;
+    color: purple;
+    border: 1px solid purple;
+    font-size: large;
+}
+input[type="search"]:focus{
+    outline:3px solid purple;
+}
+.selector{
+    margin: .5rem 1rem ;
+    padding: 2%;
+    width: 90%;
+    color: white;
+    background-color: rgb(158, 75, 158);
+}
+.selector:hover{
+    background-color: purple;
+}
+.selector:focus{
+    outline:1px solid purple;
+}
+.todo_list{
+    overflow:auto;
+    height: 65%;
+    margin-bottom:1rem;
+}

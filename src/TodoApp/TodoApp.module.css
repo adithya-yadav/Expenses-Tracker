@@ -1,0 +1,18 @@
+.center{
+    width: 60%;
+    height: 80vh;
+    background:rgb(252, 241, 252);
+    margin: auto;
+    border: 1px solid purple;
+    margin-top: 2rem;
+    box-shadow: 0px 5px 10px 5px purple;
+    overflow: hidden;
+}
+.center h2{
+    text-align: center;
+    background-color:  rgb(158, 75, 158);
+    padding: 1rem 0;
+    color: white;
+    font-weight: 500;
+    border-bottom: 5px solid purple;
+}   

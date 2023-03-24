@@ -1,7 +1,7 @@
 import { authActions } from "../../store/Auth";
 import { expenseActions } from "../../store/ExpenseStore";
 
-const webApiKey = "AIzaSyCfXxSu_jIqAKl4YlxyKA_9RABh0ofO_OA";
+const webApiKey = "AIzaSyChkDx9M8TwO4CJYzsyNkmDU6jYRU9FiU4";
 
 export async function loginorSigninToFirebase(
   email,
@@ -144,7 +144,7 @@ export async function updateDetailsInFirebase(name,photo,selectToken){
 }
 
 
-const url = "https://myweblink-6a02d-default-rtdb.firebaseio.com/";
+const url = "https://fir-7684d-default-rtdb.firebaseio.com/Exp/";
 
 export async function getExpensesFromFirebase(dispatch) {
 const localEmail = localStorage.getItem("email");
